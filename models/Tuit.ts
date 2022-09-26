@@ -10,11 +10,9 @@ export default class Tuit {
     private postedBy: User | null = null;
 
     public constructor(tuit: string, postedBy: User | null, postedOn: Date | null = null) {
-        this.tuit = tuit;
+        this.tuit = tuit ?? '';
         this.postedBy = postedBy;
-        if (postedOn !== null) {
-            this.postedOn = postedOn
-        }
+        this.postedOn = postedOn ?? new Date();
     }
 
     get tuitBody(): string {

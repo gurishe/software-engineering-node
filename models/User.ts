@@ -22,6 +22,20 @@ export default class User {
     private joined: Date = new Date();
     private location: Location | null = null;
 
+    public constructor(
+        username: string,
+        password: string,
+        firstName: string | null,
+        lastName: string | null,
+        email: string
+    ) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     get uname(): string {
         return this.username;
     }
