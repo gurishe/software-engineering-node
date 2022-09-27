@@ -12,13 +12,17 @@ const cors = require('cors')
 const app = express();
 app.use(cors());
 app.use(express.json());
-mongoose.connect('mongodb://localhost:27017/cs5500')
+mongoose.connect('mongodb://localhost:27017');
 
 const tuitDao = new TuitDao();
 const tuitController = new TuitController(app, tuitDao);
 
 const userDao = new UserDao();
 const userController = new UserController(app, userDao);
+
+const welcome = (req: Request, res: Response) => res.send('Welcome to Foundations of Software Engineering!');
+app.get('/', welcome);
+
 
 /**
  * Start a server listening at port 4000 locally

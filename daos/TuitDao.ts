@@ -4,35 +4,49 @@ import TuitDaoI from "../interfaces/TuitDao";
 
 export default class TuitDao implements TuitDaoI {
     async findAllTuits(): Promise<Tuit[]> {
-        return await TuitModel.find();
+        const allTuits = await TuitModel.find();
+        return allTuits.map(tuit =>
+            new Tuit(
+                tuit?.tuit || '',
+                tuit?.user ?? null,
+                tuit?.date ?? null,
+            )
+        );
     }
     async findTuitsByUser(uid: string): Promise<Tuit[]> {
-        return await TuitModel.find({postedBy: {_id: uid}});
+        const userTuits = await TuitModel.find({postedBy: {_id: uid}});
+        return userTuits.map(tuit =>
+            new Tuit(tuit?.tuit || '',
+                tuit?.user ?? null,
+                tuit?.date ?? null,
+            )
+        );
     }
     async findTuitById(tid: string): Promise<Tuit> {
-        const newTuit = await TuitModel.findById(tid);
+        const tuit = await TuitModel.findById(tid);
         return new Tuit(
-            newTuit?.tuit ?? '',
-            newTuit?.user ?? null,
-            newTuit?.date ?? null
+            tuit?.tuit || '',
+            tuit?.user ?? null,
+            tuit?.date ?? null
         );
     }
     async createTuit(tuit: Tuit): Promise<Tuit> {
         const newTuit = await TuitModel.create(tuit);
         return new Tuit(
-            newTuit?.tuit.toString() || '',
+            newTuit?.tuit || '',
             newTuit?.postedBy ?? null,
             newTuit?.postedOn ?? null
-        )
+        );
     }
     async updateTuit(tid: string, tuit: Tuit): Promise<any> {
         const numUpdated = await TuitModel.updateOne(
             {_id: tid},
             {$set: tuit}
-        )
+        );
         return numUpdated.upsertedCount;
     }
-    async deleteTuit(tid: string): Promise<any>{
-        return await TuitModel.deleteOne({_id: tid})
+    async deleteTuit(tid: string): Promise<any> {
+        const result = await TuitModel.deleteOne({_id: tid});
+        return result.deletedCount;
     }
 }

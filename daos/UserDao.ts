@@ -8,10 +8,24 @@ import UserDaoI from "../interfaces/UserDao";
  */
 export default class UserDao implements UserDaoI {
     async findAllUsers(): Promise<User[]> {
-        return await UserModel.find();
+        const allUsers = await UserModel.find();
+        return allUsers.map(userModel =>
+            new User(userModel?.username ?? '',
+                userModel?.password ?? '',
+                userModel?.firstName ?? null,
+                userModel?.lastName ?? null,
+                userModel?.email ?? '',
+            )
+        );
     }
     async findUserById(uid: string): Promise<any> {
-        return await UserModel.findById(uid);
+        const user = await UserModel.findById(uid);
+        return new User(user?.username ?? '',
+            user?.password ?? '',
+            user?.firstName ?? null,
+            user?.lastName ?? null,
+            user?.email ?? '',
+        );
     }
     async createUser(user: User): Promise<User> {
         const newUser = await UserModel.create(user);
@@ -21,12 +35,17 @@ export default class UserDao implements UserDaoI {
             newUser?.firstName ?? null,
             newUser?.lastName ?? null,
             newUser?.email ?? '',
-        )
+        );
     }
     async deleteUser(uid: string):  Promise<any> {
-        return await UserModel.deleteOne({_id: uid});
+        const result = await UserModel.deleteOne({_id: uid});
+        return result.deletedCount;
     }
     async updateUser(uid: string, user: User): Promise<any> {
-        return await UserModel.updateOne({_id: uid}, {$set: user});
+        const result = await UserModel.updateOne(
+            {_id: uid},
+            {$set: user}
+        );
+        return result.upsertedCount;
     }
 }
