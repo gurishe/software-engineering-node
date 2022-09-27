@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 /**
  * This is based on the Assignment 1 documentation:
- * // https://docs.google.com/document/d/1zWYPxurQGwcLcNfDbIq4oBGM-VOSV13LlZgaAbq1Fek/edit
+ * https://docs.google.com/document/d/1zWYPxurQGwcLcNfDbIq4oBGM-VOSV13LlZgaAbq1Fek/edit
  */
 const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},

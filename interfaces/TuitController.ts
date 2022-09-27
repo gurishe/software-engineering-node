@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 
 /**
  * This is based on the Assignment 1 documentation:
- * // https://docs.google.com/document/d/1zWYPxurQGwcLcNfDbIq4oBGM-VOSV13LlZgaAbq1Fek/edit
+ * https://docs.google.com/document/d/1zWYPxurQGwcLcNfDbIq4oBGM-VOSV13LlZgaAbq1Fek/edit
  */
 export default interface TuitController {
     findAllTuits(req: Request, res: Response): void;
