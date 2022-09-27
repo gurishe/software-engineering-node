@@ -12,7 +12,7 @@ const cors = require('cors')
 const app = express();
 app.use(cors());
 app.use(express.json());
-mongoose.connect('mongodb://localhost:27017/cs5500');
+mongoose.connect('mongodb://localhost:27017/tuiter');
 
 const tuitDao = new TuitDao();
 const tuitController = new TuitController(app, tuitDao);
