@@ -1,5 +1,6 @@
 import {Express, Request, Response} from "express";
 import TuitDaoI from "./TuitDaoI";
+import TuitControllerI from "./TuitControllerI";
 
 export default class TuitController {
     private static tuitController: TuitController | null = null;
@@ -18,19 +19,21 @@ export default class TuitController {
         return TuitController.tuitController;
     }
     private constructor() {}
+
     private findAllTuits = (req: Request, res: Response) =>
         TuitController.tuitDao
             .findAllTuits()
             .then(tuits => res.json(tuits));
+
     private findTuitById = (req: Request, res: Response) =>
         TuitController.tuitDao
             .findTuitById(req.params.tid)
             .then(tuit => res.json(tuit));
-    private findTuitsByAuthor =
-        (req: Request, res: Response) =>
-            TuitController.tuitDao
-                .findTuitsByAuthor(req.params.uid)
-                .then(tuits => res.json(tuits));
+
+    private findTuitsByAuthor = (req: Request, res: Response) =>
+        TuitController.tuitDao
+            .findTuitsByAuthor(req.params.uid)
+            .then(tuits => res.json(tuits));
     private createTuit = (req: Request, res: Response) =>
         TuitController.tuitDao
             .createTuit({...req.body, postedBy: req.params.uid})

@@ -1,5 +1,4 @@
 import Tuit from "./Tuit";
-import User from "../users/User";
 
 export default interface TuitDaoI {
     findAllTuits(): Promise<Tuit[]>;
