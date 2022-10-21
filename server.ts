@@ -12,6 +12,8 @@ import UserDao from "./users/UserDao";
 import UserController from "./users/UserController";
 import FollowController from "./follows/FollowController";
 import FollowDao from "./follows/FollowDao";
+import BookmarkController from "./bookmarks/BookmarkController";
+import BookmarkDao from "./bookmarks/BookmarkDao";
 
 const cors = require('cors')
 const app = express();
@@ -24,6 +26,7 @@ const userController = UserController.getInstance(app, UserDao.getInstance());
 const tuitController = TuitController.getInstance(app, TuitDao.getInstance());
 const likeController = LikeController.getInstance(app, LikeDao.getInstance());
 const followController = FollowController.getInstance(app, FollowDao.getInstance());
+const bookmarkController = BookmarkController.getInstance(app, BookmarkDao.getInstance());
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to CS5500 Tuiter API')
