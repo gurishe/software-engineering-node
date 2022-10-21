@@ -2,6 +2,7 @@ import FollowDaoI from "./FollowDaoI";
 import User from "../users/User";
 import Follow from "./Follow";
 import FollowModel from "./FollowModel";
+import mongoose, {ObjectId} from "mongoose";
 
 export default class FollowDao implements FollowDaoI {
     private static followDao: FollowDaoI | null = null;
@@ -45,7 +46,10 @@ export default class FollowDao implements FollowDaoI {
 
     async followUser(follower: User, followed: User): Promise<Follow> {
         const model = await FollowModel
-            .create({follower: follower.idUser, followed: followed.idUser});
+            .create({
+                follower: follower.idUser,
+                followed: followed.idUser
+            });
         return new Follow(
             model?._id.toString(),
             follower,

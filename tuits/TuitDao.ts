@@ -60,7 +60,7 @@ export default class TuitDao implements TuitDaoI {
         const tuitMongooseModel = await TuitModel.create(tuit);
         return new Tuit(
             tuitMongooseModel?._id.toString() ?? '',
-            tuitMongooseModel.tuit,
+            tuitMongooseModel?.tuit ?? '',
             new Date(tuitMongooseModel?.postedOn ?? (new Date()))
         )
     }

@@ -1,6 +1,7 @@
 import FollowControllerI from "./FollowControllerI";
 import FollowDaoI from "./FollowDaoI";
 import {Express, Request, Response} from "express";
+import User from "../users/User";
 
 export default class FollowController implements FollowControllerI {
     private static followController: FollowControllerI | null = null;
@@ -24,7 +25,18 @@ export default class FollowController implements FollowControllerI {
 
     followUser = (req: Request, res: Response) =>
         FollowController.followDao
-            .followUser(req.body.follower, req.body.followed)
+            .followUser(
+                new User(
+                    req.params.uidFollower,
+                    req.body.follower.username,
+                    req.body.follower.password
+                ),
+                new User(
+                    req.params.uidFollowed,
+                    req.body.followed.username,
+                    req.body.followed.password
+                )
+            )
             .then(follow => res.json(follow));
 
     unfollowUser = (req: Request, res: Response) =>
