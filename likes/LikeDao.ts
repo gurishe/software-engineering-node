@@ -6,32 +6,35 @@ import Like from "./Like";
 
 export default class LikeDao implements LikeDaoI {
     private static likeDao: LikeDaoI | null = null;
-    public static getInstance = (): LikeDao => {
+
+    public static getInstance = (): LikeDaoI => {
         if (LikeDao.likeDao === null) {
             LikeDao.likeDao = new LikeDao();
         }
         return LikeDao.likeDao;
     }
 
-    public async findTuitsUserLiked(uid: string): Promise<Tuit[]> {
+    private constructor() {}
+
+    async findTuitsUserLiked(uid: string): Promise<Tuit[]> {
         const model = await likeModel
             .find({likedBy: uid})
-            .populate('likedTuit')
+            .populate('tuit')
             .populate('likedBy')
             .exec();
         return model.map(tuitModel =>
             new Tuit(
-                tuitModel?.likedTuit?._id.toString() ?? '',
-                tuitModel?.likedTuit?.tuit ?? '',
+                tuitModel?.tuit?._id.toString() ?? '',
+                tuitModel?.tuit?.tuit ?? '',
                 new Date(tuitModel?.likedTuit?.postedOn ?? (new Date()))
             )
         );
     }
 
-    public async findUsersThatLikedTuit(tid: string): Promise<User[]> {
+    async findUsersThatLikedTuit(tid: string): Promise<User[]> {
         const model = await likeModel
-            .find({likedTuit: tid})
-            .populate('likedTuit')
+            .find({tuit: tid})
+            .populate('tuit')
             .populate('likedBy')
             .exec();
         return model.map(user =>
@@ -43,24 +46,24 @@ export default class LikeDao implements LikeDaoI {
         );
     }
 
-    public async findTuitLikesCount(tid: string): Promise<any> {
+    async findTuitLikesCount(tid: string): Promise<any> {
         return likeModel
-            .find({likedTuit: tid})
+            .find({tuit: tid})
             .count();
     }
 
-    public async userLikesTuit(uid: string, tid: string): Promise<Like> {
+    async userLikesTuit(uid: string, tid: string): Promise<Like> {
         const model = await likeModel
-            .create({likedTuit: tid, likedBy: uid});
+            .create({tuit: tid, likedBy: uid});
         return new Like(
             model?._id.toString() ?? '',
-            model?.likedTuit?.toString() ?? '',
+            model?.tuit?.toString() ?? '',
             model?.likedBy?.toString() ?? ''
         );
     }
 
-    public async userUnlikesTuit(uid: string, tid: string): Promise<any> {
+    async userUnlikesTuit(uid: string, tid: string): Promise<any> {
         return likeModel
-            .deleteOne({likedTuit: tid, likedBy: uid});
+            .deleteOne({tuit: tid, likedBy: uid});
     }
 }

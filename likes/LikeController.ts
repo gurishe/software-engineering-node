@@ -21,27 +21,27 @@ export default class LikeController implements LikeControllerI {
 
     private constructor() {}
 
-    public findTuitsUserLiked = (req: Request, res: Response) =>
+    findTuitsUserLiked = (req: Request, res: Response) =>
         LikeController.likesDao
             .findTuitsUserLiked(req.params.uid)
             .then(likes => res.json(likes));
 
-    public findUsersThatLikedTuit = (req: Request, res: Response) =>
+    findUsersThatLikedTuit = (req: Request, res: Response) =>
         LikeController.likesDao
             .findUsersThatLikedTuit(req.params.tid)
             .then(likes => res.json(likes));
 
-    public findTuitLikesCount = (req: Request, res: Response) =>
+    findTuitLikesCount = (req: Request, res: Response) =>
         LikeController.likesDao
             .findTuitLikesCount(req.params.tid)
             .then(likes => res.json({likes}));
 
-    public userLikesTuit = (req: Request, res: Response) =>
+    userLikesTuit = (req: Request, res: Response) =>
         LikeController.likesDao
             .userLikesTuit(req.params.uid, req.params.tid)
             .then(status => res.json(status));
 
-    public userUnlikesTuit = (req: Request, res: Response) =>
+    userUnlikesTuit = (req: Request, res: Response) =>
         LikeController.likesDao
             .userUnlikesTuit(req.params.uid, req.params.tid)
             .then(status => res.json(status));

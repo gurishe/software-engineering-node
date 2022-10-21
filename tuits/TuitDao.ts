@@ -1,10 +1,11 @@
 import TuitDaoI from "./TuitDaoI";
 import Tuit from "./Tuit";
-import tuitModel from "./TuitModel";
+import TuitModel from "./TuitModel";
 import User from "../users/User";
 
 export default class TuitDao implements TuitDaoI {
     private static tuitDao: TuitDaoI | null = null;
+
     public static getInstance = (): TuitDaoI => {
         if (TuitDao.tuitDao === null) {
             TuitDao.tuitDao = new TuitDao();
@@ -14,8 +15,8 @@ export default class TuitDao implements TuitDaoI {
 
     private constructor() {}
 
-    public async findTuitById(id: string): Promise<Tuit> {
-        const tuitMongooseModel: any = await tuitModel
+    async findTuitById(id: string): Promise<Tuit> {
+        const tuitMongooseModel = await TuitModel
             .findById(id)
             .populate('postedBy')
             .exec();
@@ -31,8 +32,9 @@ export default class TuitDao implements TuitDaoI {
         tuit.author = author;
         return tuit;
     }
-    public async findAllTuits(): Promise<Tuit[]> {
-        const tuitMongooseModels = await tuitModel.find();
+
+    async findAllTuits(): Promise<Tuit[]> {
+        const tuitMongooseModels = await TuitModel.find();
         return tuitMongooseModels
             .map((tuitMongooseModel) => {
                 return new Tuit(
@@ -41,8 +43,9 @@ export default class TuitDao implements TuitDaoI {
                     new Date(tuitMongooseModel?.postedOn ?? (new Date())))
             });
     }
-    public async findTuitsByAuthor(authorId: string): Promise<Tuit[]> {
-        const tuitMongooseModels = await tuitModel
+
+    async findTuitsByAuthor(authorId: string): Promise<Tuit[]> {
+        const tuitMongooseModels = await TuitModel
             .find({postedBy: authorId});
         return tuitMongooseModels
             .map((tuitMongooseModel) => {
@@ -52,19 +55,22 @@ export default class TuitDao implements TuitDaoI {
                     new Date(tuitMongooseModel?.postedOn ?? (new Date())))
             });
     }
-    public async createTuit(tuit: Tuit): Promise<Tuit> {
-        const tuitMongooseModel = await tuitModel.create(tuit);
+
+    async createTuit(tuit: Tuit): Promise<Tuit> {
+        const tuitMongooseModel = await TuitModel.create(tuit);
         return new Tuit(
             tuitMongooseModel?._id.toString() ?? '',
             tuitMongooseModel.tuit,
             new Date(tuitMongooseModel?.postedOn ?? (new Date()))
         )
     }
-    public async deleteTuit(tuitId: string): Promise<any> {
-        return tuitModel.deleteOne({_id: tuitId});
+
+    async deleteTuit(tuitId: string): Promise<any> {
+        return TuitModel.deleteOne({_id: tuitId});
     }
-    public async updateTuit(tuitId: string, tuit: Tuit): Promise<any> {
-        return tuitModel.updateOne(
+
+    async updateTuit(tuitId: string, tuit: Tuit): Promise<any> {
+        return TuitModel.updateOne(
             {_id: tuitId},
             {$set: {tuit: tuit.post}}
         );
