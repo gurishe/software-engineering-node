@@ -21,7 +21,7 @@ export default class TuitDao implements TuitDaoI {
             .populate('postedBy')
             .exec();
         const author = new User(
-            tuitMongooseModel.postedBy?._id ?? '',
+            tuitMongooseModel.postedBy?._id.toString() ?? '',
             tuitMongooseModel.postedBy?.username ?? '',
             tuitMongooseModel.postedBy?.password ?? ''
         );
@@ -36,12 +36,13 @@ export default class TuitDao implements TuitDaoI {
     async findAllTuits(): Promise<Tuit[]> {
         const tuitMongooseModels = await TuitModel.find();
         return tuitMongooseModels
-            .map((tuitMongooseModel) => {
-                return new Tuit(
+            .map(tuitMongooseModel =>
+                new Tuit(
                     tuitMongooseModel?._id.toString() ?? '',
                     tuitMongooseModel?.tuit ?? '',
-                    new Date(tuitMongooseModel?.postedOn ?? (new Date())))
-            });
+                    new Date(tuitMongooseModel?.postedOn ?? (new Date()))
+                )
+            );
     }
 
     async findTuitsByAuthor(authorId: string): Promise<Tuit[]> {

@@ -15,4 +15,5 @@ export default class Tuit {
     public set author(user: User | null) { this.postedBy = user; }
     public get author(): User | null { return this.postedBy; }
     public get post(): string { return this.tuit; }
+    public get idTuit(): string { return this.id }
 }
