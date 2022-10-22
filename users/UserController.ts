@@ -10,6 +10,8 @@ import UserDaoI from "./UserDaoI";
 
 /**
  * Our User controller implementation class for parsing HTTP requests and return JSON responses.
+ * @property {UserController} userController The internal controller instance
+ * @property {UserDao} userDao The internal DAO instance
  */
 export default class UserController implements UserControllerI {
     private static userController: UserControllerI | null = null;
@@ -18,9 +20,9 @@ export default class UserController implements UserControllerI {
     /**
      * Creates or returns an instance of the User Controller so that it can be used by the
      * Express app and return JSON objects.
-     * @param {Object} app The Express object that handles the HTTP parsing and responding
-     * @param {Object} userDao The DAO that handles communications with the remote database
-     * @return {Object} The initialized User Controller object
+     * @param {Express} app The Express object that handles the HTTP parsing and responding
+     * @param {UserDao} userDao The DAO that handles communications with the remote database
+     * @return {UserController} The initialized User Controller object
      */
     public static getInstance = (app: Express, userDao: UserDaoI): UserControllerI => {
         if (UserController.userController === null) {
@@ -38,27 +40,60 @@ export default class UserController implements UserControllerI {
     }
 
     /**
-     * Constructor to create our controller
-     * @private private constructor to support the singleton pattern
+     * @private
      */
     private constructor() {}
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of all Users in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findAllUsers = (req: Request, res: Response) =>
         UserController.userDao.findAllUsers()
             .then(users => res.json(users));
 
+    /**
+     * Parses an HTTP request and adds a JSON User object representing the specified User in the
+     * HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findUserById = (req: Request, res: Response) =>
         UserController.userDao.findUserById(req.params.userid)
             .then(user => res.json(user));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted User object representing the new User
+     * in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     createUser = (req: Request, res: Response) =>
         UserController.userDao.createUser(req.body)
             .then(user => res.json(user));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted status of the delete request in the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     deleteUser = (req: Request, res: Response) =>
         UserController.userDao.deleteUser(req.params.userid)
             .then(status => res.json(status));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted status of the update request in the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     updateUser = (req: Request, res: Response) =>
         UserController.userDao.updateUser(req.params.userid, req.body)
             .then(status => res.json(status));

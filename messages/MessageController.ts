@@ -11,6 +11,8 @@ import User from "../users/User";
 
 /**
  * Our Message controller implementation class for parsing HTTP requests and return JSON responses.
+ * @property {MessageController} messageController The internal controller instance
+ * @property {MessageDao} messageDao The internal DAO instance
  */
 export default class MessageController implements MessageControllerI {
     private static messageController: MessageControllerI | null = null;
@@ -20,8 +22,8 @@ export default class MessageController implements MessageControllerI {
      * Creates or returns an instance of the Message Controller so that it can be used by the
      * Express app and return JSON objects.
      * @param {Express} app The Express object that handles the HTTP parsing and responding
-     * @param {MessageDaoI} messageDao The DAO that handles communications with the remote database
-     * @return {MessageControllerI} The initialized MessageController object
+     * @param {MessageDao} messageDao The DAO that handles communications with the remote database
+     * @return {MessageController} The initialized MessageController object
      */
     public static getInstance = (app: Express, messageDao: MessageDaoI): MessageControllerI => {
         if (MessageController.messageController === null) {
@@ -54,9 +56,11 @@ export default class MessageController implements MessageControllerI {
     private constructor() {}
 
     /**
-     *
-     * @param {Request} req
-     * @param {Response} res
+     * Parses an HTTP request and adds a JSON version of the newly created Message to the HTTP
+     * response. Expects two Users and a string message in the HTTP request body.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
      */
     createMessage = (req: Request, res: Response) =>
         MessageController.messageDao
@@ -75,16 +79,35 @@ export default class MessageController implements MessageControllerI {
             )
             .then(message => res.json(message));
 
+    /**
+     * Parses an HTTP request and adds a JSON version of the result of deleting a Message in the
+     * HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     deleteMessage = (req: Request, res: Response) =>
         MessageController.messageDao
             .deleteMessage(req.params.mid)
             .then(result => res.json(result));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of Messages to the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findSentMessages = (req: Request, res: Response) =>
         MessageController.messageDao
             .findSentMessages(req.params.uid)
             .then(messages => res.json(messages));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of Messages to the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findReceivedMessages = (req: Request, res: Response) =>
         MessageController.messageDao
             .findReceivedMessages(req.params.uid)

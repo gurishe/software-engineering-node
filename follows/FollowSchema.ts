@@ -1,3 +1,8 @@
+/**
+ * @file A mongoose schema holding all the Follow information for being added to the follows table
+ * in MongoDB.
+ */
+
 import mongoose from "mongoose";
 
 const FollowSchema = new mongoose.Schema({

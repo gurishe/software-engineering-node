@@ -1,3 +1,8 @@
+/**
+ * @file A mongoose schema holding all the Tuit information for being added to the tuits table
+ * in MongoDB.
+ */
+
 import mongoose from "mongoose";
 
 const TuitSchema = new mongoose.Schema({

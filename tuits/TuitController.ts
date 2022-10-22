@@ -10,6 +10,8 @@ import TuitControllerI from "./TuitControllerI";
 
 /**
  * Our Tuit controller implementation class for parsing HTTP requests and return JSON responses.
+ * @property {TuitController} tuitController The internal controller instance
+ * @property {TuitDao} tuitDao The internal DAO instance
  */
 export default class TuitController implements TuitControllerI {
     private static tuitController: TuitControllerI | null = null;
@@ -18,9 +20,9 @@ export default class TuitController implements TuitControllerI {
     /**
      * Creates or returns an instance of the Tuit Controller so that it can be used by the
      * Express app and return JSON objects.
-     * @param {Object} app The Express object that handles the HTTP parsing and responding
-     * @param {Object} tuitDao The DAO that handles communications with the remote database
-     * @return {Object} The initialized Tuit Controller object
+     * @param {Express} app The Express object that handles the HTTP parsing and responding
+     * @param {TuitDao} tuitDao The DAO that handles communications with the remote database
+     * @return {TuitController} The initialized Tuit Controller object
      */
     public static getInstance = (app: Express, tuitDao: TuitDaoI): TuitControllerI => {
         if (TuitController.tuitController === null) {
@@ -37,36 +39,74 @@ export default class TuitController implements TuitControllerI {
     }
 
     /**
-     * Constructor to create our controller
-     * @private private constructor to support the singleton pattern
+     * @private
      */
     private constructor() {}
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of all Tuits in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findAllTuits = (req: Request, res: Response) =>
         TuitController.tuitDao
             .findAllTuits()
             .then(tuits => res.json(tuits));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted Tuit object in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findTuitById = (req: Request, res: Response) =>
         TuitController.tuitDao
             .findTuitById(req.params.tid)
             .then(tuit => res.json(tuit));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of all Tuits written by a specified
+     * User in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findTuitsByAuthor = (req: Request, res: Response) =>
         TuitController.tuitDao
             .findTuitsByAuthor(req.params.uid)
             .then(tuits => res.json(tuits));
 
+    /**
+     * Parses an HTTP request and adds a new JSON formatted Tuit object in the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     createTuit = (req: Request, res: Response) =>
         TuitController.tuitDao
             .createTuit({...req.body, postedBy: req.params.uid})
             .then(actualTuit => res.json(actualTuit));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted status of the delete request in the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     deleteTuit = (req: Request, res: Response) =>
         TuitController.tuitDao
             .deleteTuit(req.params.tid)
             .then(status => res.json(status));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted status of the update request in the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     updateTuit = (req: Request, res: Response) =>
         TuitController.tuitDao
             .updateTuit(req.params.tid, req.body)

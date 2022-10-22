@@ -12,6 +12,8 @@ import Tuit from "../tuits/Tuit";
 
 /**
  * Our Bookmark controller implementation class for parsing HTTP requests and return JSON responses.
+ * @property {BookmarkController} bookmarkController The internal controller instance
+ * @property {BookmarkDao} bookmarkDao The internal DAO instance
  */
 export default class BookmarkController implements BookmarkControllerI {
     private static bookmarkController: BookmarkControllerI | null = null;
@@ -21,8 +23,8 @@ export default class BookmarkController implements BookmarkControllerI {
      * Creates or returns an instance of the Bookmark Controller so that it can be used by the
      * Express app and return JSON objects.
      * @param {Express} app The Express object that handles the HTTP parsing and responding
-     * @param {BookmarkDaoI} bookmarkDao The DAO that handles communications with the remote database
-     * @return {BookmarkControllerI} The initialized Bookmark Controller object
+     * @param {BookmarkDao} bookmarkDao The DAO that handles communications with the remote database
+     * @return {BookmarkController} The initialized Bookmark Controller object
      */
     public static getInstance = (app: Express, bookmarkDao: BookmarkDaoI): BookmarkControllerI => {
         if (BookmarkController.bookmarkController === null) {
@@ -37,16 +39,29 @@ export default class BookmarkController implements BookmarkControllerI {
     }
 
     /**
-     * Constructor to create our controller
-     * @private private constructor to support the singleton pattern
-     */
+    * @private
+    */
     private constructor() {}
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of bookmarked Tuits to the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findBookmarkedTuits = (req: Request, res: Response) =>
         BookmarkController.bookmarkDao
             .findBookmarkedTuits(req.params.uid)
             .then(tuits => res.json(tuits));
 
+    /**
+     * Parses an HTTP request and adds a JSON version of the newly created Bookmark to the HTTP
+     * response. Expects a User and a Tuit object in the HTTP request body.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     createBookmark = (req: Request, res: Response) =>
         BookmarkController.bookmarkDao
             .createBookmark(
@@ -63,6 +78,13 @@ export default class BookmarkController implements BookmarkControllerI {
             )
             .then(bookmark => res.json(bookmark));
 
+    /**
+     * Parses an HTTP request and adds a JSON version of the status of the delete request to the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     deleteBookmark = (req: Request, res: Response) =>
         BookmarkController.bookmarkDao
             .deleteBookmark(req.params.bid)

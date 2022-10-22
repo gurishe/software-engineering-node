@@ -1,3 +1,8 @@
+/**
+ * @file A mongoose schema holding all the Like information for being added to the likes table
+ * in MongoDB.
+ */
+
 import mongoose from "mongoose";
 
 const LikeSchema = new mongoose.Schema({

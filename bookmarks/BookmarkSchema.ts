@@ -1,3 +1,8 @@
+/**
+ * @file A mongoose schema holding all the Bookmark information for being added to the bookmarks table
+ * in MongoDB.
+ */
+
 import mongoose from "mongoose";
 
 const BookmarkSchema = new mongoose.Schema({

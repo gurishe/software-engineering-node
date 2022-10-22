@@ -11,6 +11,8 @@ import User from "../users/User";
 
 /**
  * Our Follow controller implementation class for parsing HTTP requests and return JSON responses.
+ * @property {FollowController} followController The internal controller instance
+ * @property {FollowDao} followDao The internal DAO instance
  */
 export default class FollowController implements FollowControllerI {
     private static followController: FollowControllerI | null = null;
@@ -19,9 +21,9 @@ export default class FollowController implements FollowControllerI {
     /**
      * Creates or returns an instance of the Follow Controller so that it can be used by the
      * Express app and return JSON objects.
-     * @param {Object} app The Express object that handles the HTTP parsing and responding
-     * @param {Object} followDao The DAO that handles communications with the remote database
-     * @return {Object} The initialized Follower Controller object
+     * @param {Express} app The Express object that handles the HTTP parsing and responding
+     * @param {FollowDao} followDao The DAO that handles communications with the remote database
+     * @return {FollowController} The initialized Follower Controller object
      */
     public static getInstance = (app: Express, followDao: FollowDaoI): FollowControllerI => {
         if (FollowController.followController === null) {
@@ -38,11 +40,17 @@ export default class FollowController implements FollowControllerI {
     }
 
     /**
-     * Constructor to create our controller
-     * @private private constructor to support the singleton pattern
+     * @private
      */
     private constructor() {}
 
+    /**
+     * Parses an HTTP request and adds a JSON version of the newly created Follow to the HTTP
+     * response. Expects two Users and a string message in the HTTP request body.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     followUser = (req: Request, res: Response) =>
         FollowController.followDao
             .followUser(
@@ -59,16 +67,35 @@ export default class FollowController implements FollowControllerI {
             )
             .then(follow => res.json(follow));
 
+    /**
+     * Parses an HTTP request and adds a JSON version of the status of the delete request to the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     unfollowUser = (req: Request, res: Response) =>
         FollowController.followDao
             .unfollowUser(req.params.fid)
             .then(result => res.json(result));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of Users to the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findFollowed = (req: Request, res: Response) =>
         FollowController.followDao
             .findFollowed(req.params.uid)
             .then(users => res.json(users));
 
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of Users to the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
     findFollowers = (req: Request, res: Response) =>
         FollowController.followDao
             .findFollowers(req.params.uid)
