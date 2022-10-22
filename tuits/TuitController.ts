@@ -1,11 +1,27 @@
+/**
+ * @file This contains an implementation of our Tuit Controller Interface which is used
+ * with Express to establish our API URIs and parse incoming HTTP messages to be passed off
+ * to a data access object (DAO).
+ */
+
 import {Express, Request, Response} from "express";
 import TuitDaoI from "./TuitDaoI";
 import TuitControllerI from "./TuitControllerI";
 
+/**
+ * Our Tuit controller implementation class for parsing HTTP requests and return JSON responses.
+ */
 export default class TuitController implements TuitControllerI {
     private static tuitController: TuitControllerI | null = null;
     private static tuitDao: TuitDaoI;
 
+    /**
+     * Creates or returns an instance of the Tuit Controller so that it can be used by the
+     * Express app and return JSON objects.
+     * @param {Object} app The Express object that handles the HTTP parsing and responding
+     * @param {Object} tuitDao The DAO that handles communications with the remote database
+     * @return {Object} The initialized Tuit Controller object
+     */
     public static getInstance = (app: Express, tuitDao: TuitDaoI): TuitControllerI => {
         if (TuitController.tuitController === null) {
             TuitController.tuitController = new TuitController();
@@ -20,6 +36,10 @@ export default class TuitController implements TuitControllerI {
         return TuitController.tuitController;
     }
 
+    /**
+     * Constructor to create our controller
+     * @private private constructor to support the singleton pattern
+     */
     private constructor() {}
 
     findAllTuits = (req: Request, res: Response) =>

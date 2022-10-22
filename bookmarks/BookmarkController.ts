@@ -1,13 +1,29 @@
+/**
+ * @file This contains an implementation of our Bookmark Controller Interface which is used
+ * with Express to establish our API URIs and parse incoming HTTP messages to be passed off
+ * to a data access object (DAO).
+ */
+
 import BookmarkControllerI from "./BookmarkControllerI";
 import BookmarkDaoI from "./BookmarkDaoI";
 import {Express, Request, Response} from "express";
 import User from "../users/User";
 import Tuit from "../tuits/Tuit";
 
+/**
+ * Our Bookmark controller implementation class for parsing HTTP requests and return JSON responses.
+ */
 export default class BookmarkController implements BookmarkControllerI {
     private static bookmarkController: BookmarkControllerI | null = null;
     private static bookmarkDao: BookmarkDaoI;
 
+    /**
+     * Creates or returns an instance of the Bookmark Controller so that it can be used by the
+     * Express app and return JSON objects.
+     * @param {Express} app The Express object that handles the HTTP parsing and responding
+     * @param {BookmarkDaoI} bookmarkDao The DAO that handles communications with the remote database
+     * @return {BookmarkControllerI} The initialized Bookmark Controller object
+     */
     public static getInstance = (app: Express, bookmarkDao: BookmarkDaoI): BookmarkControllerI => {
         if (BookmarkController.bookmarkController === null) {
             BookmarkController.bookmarkController = new BookmarkController();
@@ -20,6 +36,10 @@ export default class BookmarkController implements BookmarkControllerI {
         return BookmarkController.bookmarkController;
     }
 
+    /**
+     * Constructor to create our controller
+     * @private private constructor to support the singleton pattern
+     */
     private constructor() {}
 
     findBookmarkedTuits = (req: Request, res: Response) =>
