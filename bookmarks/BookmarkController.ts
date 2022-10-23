@@ -14,9 +14,11 @@ import Tuit from "../tuits/Tuit";
  * Our Bookmark controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {BookmarkController} bookmarkController The internal controller instance
  * @property {BookmarkDao} bookmarkDao The internal DAO instance
+ * @class BookmarkController
+ * @implements {BookmarkControllerI}
  */
 export default class BookmarkController implements BookmarkControllerI {
-    private static bookmarkController: BookmarkControllerI | null = null;
+    private static bookmarkController: BookmarkController | null = null;
     private static bookmarkDao: BookmarkDaoI;
 
     /**
@@ -26,7 +28,7 @@ export default class BookmarkController implements BookmarkControllerI {
      * @param {BookmarkDao} bookmarkDao The DAO that handles communications with the remote database
      * @return {BookmarkController} The initialized Bookmark Controller object
      */
-    public static getInstance = (app: Express, bookmarkDao: BookmarkDaoI): BookmarkControllerI => {
+    public static getInstance = (app: Express, bookmarkDao: BookmarkDaoI): BookmarkController => {
         if (BookmarkController.bookmarkController === null) {
             BookmarkController.bookmarkController = new BookmarkController();
         }
@@ -39,6 +41,7 @@ export default class BookmarkController implements BookmarkControllerI {
     }
 
     /**
+    * Private constructor to support the singleton pattern
     * @private
     */
     private constructor() {}

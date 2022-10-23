@@ -12,9 +12,11 @@ import TuitControllerI from "./TuitControllerI";
  * Our Tuit controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {TuitController} tuitController The internal controller instance
  * @property {TuitDao} tuitDao The internal DAO instance
+ * @class TuitController
+ * @implements {TuitControllerI}
  */
 export default class TuitController implements TuitControllerI {
-    private static tuitController: TuitControllerI | null = null;
+    private static tuitController: TuitController | null = null;
     private static tuitDao: TuitDaoI;
 
     /**
@@ -24,7 +26,7 @@ export default class TuitController implements TuitControllerI {
      * @param {TuitDao} tuitDao The DAO that handles communications with the remote database
      * @return {TuitController} The initialized Tuit Controller object
      */
-    public static getInstance = (app: Express, tuitDao: TuitDaoI): TuitControllerI => {
+    public static getInstance = (app: Express, tuitDao: TuitDaoI): TuitController => {
         if (TuitController.tuitController === null) {
             TuitController.tuitController = new TuitController();
         }
@@ -39,6 +41,7 @@ export default class TuitController implements TuitControllerI {
     }
 
     /**
+     * Private constructor to support the singleton pattern
      * @private
      */
     private constructor() {}

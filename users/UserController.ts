@@ -12,9 +12,11 @@ import UserDaoI from "./UserDaoI";
  * Our User controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {UserController} userController The internal controller instance
  * @property {UserDao} userDao The internal DAO instance
+ * @class UserController
+ * @implements {UserControllerI}
  */
 export default class UserController implements UserControllerI {
-    private static userController: UserControllerI | null = null;
+    private static userController: UserController | null = null;
     private static userDao: UserDaoI;
 
     /**
@@ -24,7 +26,7 @@ export default class UserController implements UserControllerI {
      * @param {UserDao} userDao The DAO that handles communications with the remote database
      * @return {UserController} The initialized User Controller object
      */
-    public static getInstance = (app: Express, userDao: UserDaoI): UserControllerI => {
+    public static getInstance = (app: Express, userDao: UserDaoI): UserController => {
         if (UserController.userController === null) {
             UserController.userController = new UserController();
         }
@@ -40,6 +42,7 @@ export default class UserController implements UserControllerI {
     }
 
     /**
+     * Private constructor to support the singleton pattern
      * @private
      */
     private constructor() {}

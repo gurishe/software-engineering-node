@@ -13,9 +13,11 @@ import User from "../users/User";
  * Our Follow controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {FollowController} followController The internal controller instance
  * @property {FollowDao} followDao The internal DAO instance
+ * @class FollowController
+ * @implements {FollowControllerI}
  */
 export default class FollowController implements FollowControllerI {
-    private static followController: FollowControllerI | null = null;
+    private static followController: FollowController | null = null;
     private static followDao: FollowDaoI;
 
     /**
@@ -25,7 +27,7 @@ export default class FollowController implements FollowControllerI {
      * @param {FollowDao} followDao The DAO that handles communications with the remote database
      * @return {FollowController} The initialized Follower Controller object
      */
-    public static getInstance = (app: Express, followDao: FollowDaoI): FollowControllerI => {
+    public static getInstance = (app: Express, followDao: FollowDaoI): FollowController => {
         if (FollowController.followController === null) {
             FollowController.followController = new FollowController();
         }
@@ -40,6 +42,7 @@ export default class FollowController implements FollowControllerI {
     }
 
     /**
+     * Private constructor to support the singleton pattern
      * @private
      */
     private constructor() {}

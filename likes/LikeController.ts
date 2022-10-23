@@ -12,9 +12,11 @@ import LikeControllerI from "./LikeControllerI";
  * Our Like controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {LikeController} likeController The internal controller instance
  * @property {LikeDao} likeDao The internal DAO instance
+ * @class LikeController
+ * @implements {LikeControllerI}
  */
 export default class LikeController implements LikeControllerI {
-    private static likesController: LikeControllerI | null = null;
+    private static likesController: LikeController | null = null;
     private static likeDao: LikeDaoI;
 
     /**
@@ -24,7 +26,7 @@ export default class LikeController implements LikeControllerI {
      * @param {LikeDao} likeDao The DAO that handles communications with the remote database
      * @return {LikeController} The initialized Like Controller object
      */
-    public static getInstance = (app: Express, likeDao: LikeDaoI): LikeControllerI => {
+    public static getInstance = (app: Express, likeDao: LikeDaoI): LikeController => {
         if (LikeController.likesController === null) {
             LikeController.likesController = new LikeController();
         }
@@ -39,6 +41,7 @@ export default class LikeController implements LikeControllerI {
     }
 
     /**
+     * Private constructor to support the singleton pattern
      * @private
      */
     private constructor() {}

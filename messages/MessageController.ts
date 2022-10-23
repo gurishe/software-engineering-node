@@ -13,9 +13,11 @@ import User from "../users/User";
  * Our Message controller implementation class for parsing HTTP requests and return JSON responses.
  * @property {MessageController} messageController The internal controller instance
  * @property {MessageDao} messageDao The internal DAO instance
+ * @class MessageController
+ * @implements {MessageControllerI}
  */
 export default class MessageController implements MessageControllerI {
-    private static messageController: MessageControllerI | null = null;
+    private static messageController: MessageController | null = null;
     private static messageDao: MessageDaoI;
 
     /**
@@ -25,7 +27,7 @@ export default class MessageController implements MessageControllerI {
      * @param {MessageDao} messageDao The DAO that handles communications with the remote database
      * @return {MessageController} The initialized MessageController object
      */
-    public static getInstance = (app: Express, messageDao: MessageDaoI): MessageControllerI => {
+    public static getInstance = (app: Express, messageDao: MessageDaoI): MessageController => {
         if (MessageController.messageController === null) {
             MessageController.messageController = new MessageController();
         }
@@ -51,6 +53,7 @@ export default class MessageController implements MessageControllerI {
     }
 
     /**
+     * Private constructor to support the singleton pattern
      * @private
      */
     private constructor() {}
