@@ -5,6 +5,10 @@
 
 import mongoose from "mongoose";
 
+/**
+ * The mongoose schema defining the requirements for inserting into the tuits table
+ * @global
+ */
 const TuitSchema = new mongoose.Schema({
     tuit: {type: String, required: true},
     postedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},

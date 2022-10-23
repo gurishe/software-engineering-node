@@ -6,6 +6,10 @@
 import mongoose from "mongoose";
 import BookmarkSchema from "./BookmarkSchema";
 
+/**
+ * The mongoose model wrapper around our BookmarkSchema
+ * @global
+ */
 const BookmarkModel = mongoose.model("BookmarkModel", BookmarkSchema);
 
 export default BookmarkModel;

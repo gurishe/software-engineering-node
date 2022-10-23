@@ -6,6 +6,10 @@
 import mongoose from "mongoose";
 import FollowSchema from "./FollowSchema";
 
+/**
+ * The mongoose model wrapper around our FollowSchema
+ * @global
+ */
 const FollowModel = mongoose.model("FollowModel", FollowSchema);
 
 export default FollowModel;

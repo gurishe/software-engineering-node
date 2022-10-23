@@ -5,6 +5,10 @@
 
 import mongoose from "mongoose";
 
+/**
+ * The mongoose schema defining the requirements for inserting into the users table
+ * @global
+ */
 const UserSchema = new mongoose.Schema({
     username: {type: String, required: true},
     password: {type: String, required: true},

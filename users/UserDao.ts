@@ -11,8 +11,8 @@ import UserDaoI from "./UserDaoI";
 /**
  * Our User DAO implementation class for handling MongoDB database accesses.
  * @property {UserDao} userDao The internal DAO instance
- * @class LikeDao
- * @implements {LikeDaoI}
+ * @class UserDao
+ * @implements {UserDaoI}
  */
 export default class UserDao implements UserDaoI {
     private static userDao: UserDao | null = null;

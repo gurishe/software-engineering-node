@@ -6,6 +6,10 @@
 import mongoose from "mongoose";
 import LikeSchema from "./LikeSchema";
 
-const LikeModel = mongoose.model("LikesModel", LikeSchema);
+/**
+ * The mongoose model wrapper around our LikeSchema
+ * @global
+ */
+const LikeModel = mongoose.model("LikeModel", LikeSchema);
 
 export default LikeModel;

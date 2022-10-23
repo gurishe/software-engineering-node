@@ -5,6 +5,10 @@
 
 import mongoose from "mongoose";
 
+/**
+ * The mongoose schema defining the requirements for inserting into the likes table
+ * @global
+ */
 const LikeSchema = new mongoose.Schema({
     likedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
     tuit: {type: mongoose.Schema.Types.ObjectId, ref: 'TuitModel'}

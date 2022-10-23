@@ -5,6 +5,10 @@
 
 import mongoose from "mongoose";
 
+/**
+ * The mongoose schema defining the requirements for inserting into the follows table
+ * @global
+ */
 const FollowSchema = new mongoose.Schema({
     followed: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel', required: true},
     follower: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel', required: true}

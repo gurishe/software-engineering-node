@@ -6,6 +6,10 @@
 import mongoose from "mongoose";
 import MessageSchema from "./MessageSchema";
 
+/**
+ * The mongoose model wrapper around our MessageSchema
+ * @global
+ */
 const MessageModel = mongoose.model("MessageModel", MessageSchema);
 
 export default MessageModel;

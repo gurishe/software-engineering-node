@@ -6,6 +6,10 @@
 import mongoose from "mongoose";
 import UserSchema from "./UserSchema";
 
+/**
+ * The mongoose model wrapper around our UserSchema
+ * @global
+ */
 const UserModel = mongoose.model('UserModel', UserSchema);
 
 export default UserModel;
