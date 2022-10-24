@@ -25,8 +25,8 @@ app.use(express.json());
 
 const USER = process.env.DB_USER;
 const PWD = process.env.DB_PWD;
-console.log(process.env, USER, PWD)
-mongoose.connect('mongodb+srv://cs5500-eg:Zhbds2123@cs5500.rmrbkxw.mongodb.net/tuiter?retryWrites=true&w=majority');
+const DB_NAME = process.env.DB_NAME || 'tuiter';
+mongoose.connect(`mongodb+srv://${USER}:${PWD}@cs5500.rmrbkxw.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`);
 
 const userController = UserController.getInstance(app, UserDao.getInstance());
 const tuitController = TuitController.getInstance(app, TuitDao.getInstance());
