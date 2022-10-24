@@ -63,15 +63,23 @@ export default class TuitDao implements TuitDaoI {
      * @return {Tuit[]} An array of all Tuits
      */
     async findAllTuits(): Promise<Tuit[]> {
-        const tuitMongooseModels = await TuitModel.find();
+        const tuitMongooseModels = await TuitModel
+            .find()
+            .populate('postedBy')
+            .exec();
         return tuitMongooseModels
-            .map(tuitMongooseModel =>
-                new Tuit(
+            .map(tuitMongooseModel => {
+                const tuit = new Tuit(
                     tuitMongooseModel?._id.toString() ?? '',
                     tuitMongooseModel?.tuit ?? '',
                     new Date(tuitMongooseModel?.postedOn ?? (new Date()))
-                )
-            );
+                );
+                tuit.author = new User(
+                    tuitMongooseModel?.postedBy?._id.toString() ?? '',
+                    tuitMongooseModel?.postedBy?.username ?? '',
+                    tuitMongooseModel?.postedBy?.password ?? '');
+                return tuit;
+        });
     }
 
     /**

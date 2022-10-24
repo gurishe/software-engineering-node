@@ -9,6 +9,7 @@ import Bookmark from "./Bookmark";
 import Tuit from "../tuits/Tuit";
 import User from "../users/User";
 import BookmarkModel from "./BookmarkModel";
+import UserModel from "../users/UserModel";
 
 /**
  * Our Bookmark DAO implementation class for handling MongoDB database accesses.
@@ -68,8 +69,13 @@ export default class BookmarkDao implements BookmarkDaoI {
     async findBookmarkedTuits(userId: string): Promise<Tuit[]> {
         const model = await BookmarkModel
             .find({user: userId})
-            .populate('tuit')
-            .populate('postedBy')
+            .populate({
+                path: 'tuit',
+                populate: {
+                    path: 'postedBy',
+                    model: UserModel
+                }
+            })
             .exec();
         return model.map(bookmark => {
             const author = new User(

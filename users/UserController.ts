@@ -7,6 +7,7 @@
 import {Request, Response, Express} from "express";
 import UserControllerI from "./UserControllerI";
 import UserDaoI from "./UserDaoI";
+import User from "./User";
 
 /**
  * Our User controller implementation class for parsing HTTP requests and return JSON responses.
@@ -98,6 +99,7 @@ export default class UserController implements UserControllerI {
      * @return void
      */
     updateUser = (req: Request, res: Response) =>
-        UserController.userDao.updateUser(req.params.userid, req.body)
+        UserController.userDao.updateUser(req.params.userid,
+            new User(req.params.userid, req.body.username, req.body.password))
             .then(status => res.json(status));
 }
