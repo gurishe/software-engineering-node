@@ -46,7 +46,9 @@ export default class User {
      * @param {string} password The User chosen account password
      */
     constructor(id: string, username: string, password: string) {
-        this.id = id; this.username = username; this.password = password;
+        this.id = id;
+        this.username = username;
+        this.password = password;
     }
 
     /**
@@ -66,4 +68,16 @@ export default class User {
      * @return {string} The unique ID of the User
      */
     get idUser() { return this.id; }
+
+    /**
+     * Gets the email of the User
+     * @return {string} The User's email
+     */
+    get userEmail() { return this.email; }
+
+    /**
+     * Sets the email of the User to the given string
+     * @param email The new email for the User to store
+     */
+    set setEmail(email: string) { this.email = email; }
 }

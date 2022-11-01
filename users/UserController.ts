@@ -38,6 +38,7 @@ export default class UserController implements UserControllerI {
         app.post('/api/users', UserController.userController.createUser);
         app.delete('/api/users/:userid', UserController.userController.deleteUser);
         app.put('/api/users/:userid', UserController.userController.updateUser);
+        app.delete('/api/users/username/:username', UserController.userController.deleteUsersByUsername);
 
         return UserController.userController;
     }
@@ -55,7 +56,8 @@ export default class UserController implements UserControllerI {
      * @return void
      */
     findAllUsers = (req: Request, res: Response) =>
-        UserController.userDao.findAllUsers()
+        UserController.userDao
+            .findAllUsers()
             .then(users => res.json(users));
 
     /**
@@ -66,7 +68,8 @@ export default class UserController implements UserControllerI {
      * @return void
      */
     findUserById = (req: Request, res: Response) =>
-        UserController.userDao.findUserById(req.params.userid)
+        UserController.userDao
+            .findUserById(req.params.userid)
             .then(user => res.json(user));
 
     /**
@@ -77,18 +80,32 @@ export default class UserController implements UserControllerI {
      * @return void
      */
     createUser = (req: Request, res: Response) =>
-        UserController.userDao.createUser(req.body)
+        UserController.userDao
+            .createUser(req.body)
             .then(user => res.json(user));
 
     /**
      * Parses an HTTP request and adds a JSON formatted status of the delete request in the HTTP
-     * response.
+     * response. This deletes a user by a given id.
      * @param {Request} req The Express HTTP request object
      * @param {Response} res The Express HTTP Response object
      * @return void
      */
     deleteUser = (req: Request, res: Response) =>
-        UserController.userDao.deleteUser(req.params.userid)
+        UserController.userDao
+            .deleteUser(req.params.userid)
+            .then(status => res.json(status));
+
+    /**
+     * Parses an HTTP request and adds a JSON formatted status of the delete request in the HTTP
+     * response. This deletes any users with the matching username.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    deleteUsersByUsername = (req: Request, res: Response) =>
+        UserController.userDao
+            .deleteUsersByUsername(req.params.username)
             .then(status => res.json(status));
 
     /**
@@ -98,8 +115,11 @@ export default class UserController implements UserControllerI {
      * @param {Response} res The Express HTTP Response object
      * @return void
      */
-    updateUser = (req: Request, res: Response) =>
-        UserController.userDao.updateUser(req.params.userid,
-            new User(req.params.userid, req.body.username, req.body.password))
+    updateUser = (req: Request, res: Response) => {
+        const user = new User(req.params.userid, req.body.username, req.body.password)
+        user.setEmail = req.body.email ?? '';
+        UserController.userDao
+            .updateUser(req.params.userid, user)
             .then(status => res.json(status));
+    }
 }
