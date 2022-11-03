@@ -52,5 +52,5 @@ export default class Tuit {
      * Gets the unique ID of the Tuit
      * @return {string} The unique ID of the Tuit
      */
-    public get idTuit(): string { return this.id }
+    public get idTuit(): string { return this.id; }
 }

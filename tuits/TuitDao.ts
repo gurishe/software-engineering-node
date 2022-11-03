@@ -106,11 +106,17 @@ export default class TuitDao implements TuitDaoI {
      */
     async createTuit(tuit: Tuit): Promise<Tuit> {
         const tuitMongooseModel = await TuitModel.create(tuit);
-        return new Tuit(
+        const newTuit = new Tuit(
             tuitMongooseModel?._id.toString() ?? '',
             tuitMongooseModel?.tuit ?? '',
             new Date(tuitMongooseModel?.postedOn ?? (new Date()))
-        )
+        );
+        newTuit.author = new User(
+            tuitMongooseModel?.postedBy?.toString() ?? '',
+            '',
+            ''
+        );
+        return newTuit;
     }
 
     /**
