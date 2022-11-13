@@ -17,11 +17,26 @@ import BookmarkController from "./bookmarks/BookmarkController";
 import BookmarkDao from "./bookmarks/BookmarkDao";
 import MessageController from "./messages/MessageController";
 import MessageDao from "./messages/MessageDao";
+import AuthenticationController from "./auth/AuthController";
 
-const cors = require('cors')
+const session = require("express-session");
+const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// set up our session
+let sess = {
+    secret: process.env.SECRET,
+    cookie: {
+        secure: false
+    }
+}
+
+if (process.env.ENV === 'PRODUCTION') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+}
 
 const USER = process.env.DB_USER;
 const PWD = process.env.DB_PWD;
@@ -34,6 +49,7 @@ const likeController = LikeController.getInstance(app, LikeDao.getInstance());
 const followController = FollowController.getInstance(app, FollowDao.getInstance());
 const bookmarkController = BookmarkController.getInstance(app, BookmarkDao.getInstance());
 const messageController = MessageController.getInstance(app, MessageDao.getInstance());
+AuthenticationController(app, UserDao.getInstance());
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to CS5500 Tuiter API')

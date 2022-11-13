@@ -64,6 +64,12 @@ export default class User {
     get pass() { return this.password; }
 
     /**
+     * Sets the password of the User to the given string
+     * @param password The new password for the User to store
+     */
+    set setPass(password: string) { this.password = password; }
+
+    /**
      * Gets the unique ID of the User
      * @return {string} The unique ID of the User
      */
