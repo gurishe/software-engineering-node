@@ -89,7 +89,7 @@ export default class AuthenticationController implements AuthenticationControlle
      * @param {Response} res The Response object for our Express app to return
      */
     logout = (req: Request, res: Response) => {
-        req.session.destroy(() => false);
+        req.session.destroy((err) => res.redirect('/'));
         res.sendStatus(200);
     }
 
