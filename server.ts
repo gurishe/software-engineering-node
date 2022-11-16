@@ -27,7 +27,7 @@ app.use(express.json());
 
 // set up our session
 let sess = {
-    secret: process.env.SECRET,
+    secret: process.env.SECRET ?? 'test',
     cookie: {
         secure: false
     }
@@ -37,9 +37,10 @@ if (process.env.ENV === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
+//app.use(session({sess}));
 
-const USER = process.env.DB_USER;
-const PWD = process.env.DB_PWD;
+const USER = process.env.DB_USER || 'cs5500-eg';
+const PWD = process.env.DB_PWD || 'Zhbds2123';
 const DB_NAME = process.env.DB_NAME || 'tuiter';
 mongoose.connect(`mongodb+srv://${USER}:${PWD}@cs5500.rmrbkxw.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`);
 
@@ -49,7 +50,7 @@ const likeController = LikeController.getInstance(app, LikeDao.getInstance());
 const followController = FollowController.getInstance(app, FollowDao.getInstance());
 const bookmarkController = BookmarkController.getInstance(app, BookmarkDao.getInstance());
 const messageController = MessageController.getInstance(app, MessageDao.getInstance());
-AuthenticationController(app, UserDao.getInstance());
+const authController = AuthenticationController.getInstance(app, UserDao.getInstance());
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to CS5500 Tuiter API')

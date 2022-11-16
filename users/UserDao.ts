@@ -69,19 +69,22 @@ export default class UserDao implements UserDaoI {
     }
 
     /**
-     * Finds and returns a given User by their username
+     * Finds and returns a given User by their username or null if a match is not found
      * @param {string} username The Tuiter username of the User
      * @return {User} The User with the matching ID
      */
-    async findUserByUsername(username: string): Promise<User> {
+    async findUserByUsername(username: string): Promise<User | null> {
         const userModel = await UserModel.findOne({username: username})
-        const user = new User(
-            userModel?._id.toString() ?? '',
-            userModel?.username ?? '',
-            userModel?.password ?? '',
-        );
-        user.setEmail = userModel?.email ?? '';
-        return user;
+        if (userModel?._id.toString()) {
+            const user = new User(
+                userModel._id.toString(),
+                userModel.username,
+                userModel.password,
+            );
+            user.setEmail = userModel.email;
+            return user;
+        }
+        return null;
     }
 
     /**

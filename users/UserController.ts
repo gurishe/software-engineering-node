@@ -35,6 +35,7 @@ export default class UserController implements UserControllerI {
         UserController.userDao = userDao;
         app.get('/api/users', UserController.userController.findAllUsers);
         app.get('/api/users/:userid', UserController.userController.findUserById);
+        app.get('/api/users/username/:username', UserController.userController.findUserByUsername);
         app.post('/api/users', UserController.userController.createUser);
         app.delete('/api/users/:userid', UserController.userController.deleteUser);
         app.put('/api/users/:userid', UserController.userController.updateUser);
@@ -70,6 +71,18 @@ export default class UserController implements UserControllerI {
     findUserById = (req: Request, res: Response) =>
         UserController.userDao
             .findUserById(req.params.userid)
+            .then(user => res.json(user));
+
+    /**
+     * Parses an HTTP request and returns the matching User given their username or null if a match
+     * is not found.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    findUserByUsername = (req: Request, res: Response) =>
+        UserController.userDao
+            .findUserByUsername(req.params.username)
             .then(user => res.json(user));
 
     /**
