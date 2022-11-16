@@ -27,7 +27,7 @@ app.use(express.json());
 
 // set up our session
 let sess = {
-    secret: process.env.SECRET ?? 'test',
+    secret: process.env.SECRET,
     saveUninitialized: false,
     resave: true,
     cookie: {
@@ -41,8 +41,8 @@ if (process.env.ENV === 'PRODUCTION') {
 }
 app.use(session(sess));
 
-const USER = process.env.DB_USER || 'cs5500-eg';
-const PWD = process.env.DB_PWD || 'Zhbds2123';
+const USER = process.env.DB_USER;
+const PWD = process.env.DB_PWD;
 const DB_NAME = process.env.DB_NAME || 'tuiter';
 mongoose.connect(`mongodb+srv://${USER}:${PWD}@cs5500.rmrbkxw.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`);
 
