@@ -28,6 +28,8 @@ app.use(express.json());
 // set up our session
 let sess = {
     secret: process.env.SECRET ?? 'test',
+    saveUninitialized: false,
+    resave: true,
     cookie: {
         secure: false
     }
@@ -37,7 +39,7 @@ if (process.env.ENV === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
-//app.use(session({sess}));
+app.use(session(sess));
 
 const USER = process.env.DB_USER || 'cs5500-eg';
 const PWD = process.env.DB_PWD || 'Zhbds2123';
