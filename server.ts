@@ -22,14 +22,14 @@ import AuthenticationController from "./auth/AuthController";
 const session = require("express-session");
 const cors = require('cors');
 const app = express();
-app.use(cors());
+app.use(cors({credentials: true, origin: true}));
 app.use(express.json());
 
 // set up our session
 let sess = {
     secret: process.env.SECRET,
-    saveUninitialized: false,
-    resave: true,
+    saveUninitialized: true,
+    resave: false,
     cookie: {
         secure: false
     }

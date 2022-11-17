@@ -75,21 +75,30 @@ export default class TuitController implements TuitControllerI {
      * @param {Response} res The Express HTTP Response object
      * @return void
      */
-    findTuitsByAuthor = (req: Request, res: Response) =>
-        TuitController.tuitDao
-            .findTuitsByAuthor(req.params.uid)
-            .then(tuits => res.json(tuits));
+    findTuitsByAuthor = (req: Request, res: Response) => {
+        let userId = req.params.uid === 'me' && req.session['profile']
+            ? req.session['profile'].id
+            : req.params.uid;
 
+        TuitController.tuitDao
+            .findTuitsByAuthor(userId)
+            .then(tuits => res.json(tuits));
+    }
     /**
      * Parses an HTTP request and adds a new JSON formatted Tuit object in the HTTP response.
      * @param {Request} req The Express HTTP request object
      * @param {Response} res The Express HTTP Response object
      * @return void
      */
-    createTuit = (req: Request, res: Response) =>
+    createTuit = (req: Request, res: Response) => {
+        let userId = req.params.uid === 'me' && req.session['profile']
+            ? req.session['profile'].id
+            : req.params.uid;
+
         TuitController.tuitDao
-            .createTuit({...req.body, postedBy: req.params.uid})
+            .createTuit({...req.body, postedBy: userId})
             .then(actualTuit => res.json(actualTuit));
+    }
 
     /**
      * Parses an HTTP request and adds a JSON formatted status of the delete request in the HTTP

@@ -2,10 +2,10 @@
  * @file https://github.com/expressjs/session/issues/792
  */
 
-import { Session } from 'express-session'
+import { SessionData } from 'express-session'
 
 declare module 'express-session' {
-    export interface Session {
+    export interface SessionData {
         profile: { [key: string]: any };
     }
 }

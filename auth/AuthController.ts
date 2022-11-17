@@ -15,11 +15,19 @@ const saltRounds = 10;
  * @param {Express} app The Express application that our server creates
  * @param {UserDaoI} userDao The User DAO created by our application
  * @class AuthenticationController
+ * @implements {AuthenticationControllerI}
  */
 export default class AuthenticationController implements AuthenticationControllerI {
     private static authController: AuthenticationController | null = null;
     private static userDao: UserDaoI;
 
+    /**
+     * Creates or returns an instance of the Authentication Controller so that it can be used by the
+     * Express app to authenticate users.
+     * @param {Express} app The Express object that handles the HTTP parsing and responding
+     * @param {UserDaoI} userDao The DAO that handles communications with the remote database
+     * @return {AuthenticationController} The initialized Authentication Controller object
+     */
     public static getInstance = (app: Express, userDao: UserDaoI): AuthenticationController => {
         if (AuthenticationController.authController === null) {
             AuthenticationController.authController = new AuthenticationController();
