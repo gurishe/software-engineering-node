@@ -37,7 +37,6 @@ export default class TuitController implements TuitControllerI {
         app.get('/api/users/:uid/tuits', TuitController.tuitController.findTuitsByAuthor);
         app.post('/api/users/:uid/tuits', TuitController.tuitController.createTuit);
         app.delete('/api/tuits/:tid', TuitController.tuitController.deleteTuit);
-        app.put('/api/tuits/:tid/likes', TuitController.tuitController.updateLikes);
 
         return TuitController.tuitController;
     }
@@ -124,17 +123,5 @@ export default class TuitController implements TuitControllerI {
     updateTuit = (req: Request, res: Response) =>
         TuitController.tuitDao
             .updateTuit(req.params.tid, req.body)
-            .then(status => res.json(status));
-
-    /**
-     * Parses an HTTP request and adds a JSON formatted status of the update request in the HTTP
-     * response.
-     * @param {Request} req The Express HTTP request object
-     * @param {Response} res The Express HTTP Response object
-     * @return void
-     */
-    updateLikes = (req: Request, res: Response) =>
-        TuitController.tuitDao
-            .updateLikes(req.params.tid, req.body)
             .then(status => res.json(status));
 }
