@@ -16,8 +16,9 @@ export default class Tuit {
     private tuit: string;
     private postedOn: Date;
     private postedBy: User | null;
+    private stats: object;
 
-    /**
+/**
      * Creates a new Tuit object representing a post made by a User.
      * @param {string} id A unique ID for this object
      * @param {string} tuit The text body being posted
@@ -28,6 +29,11 @@ export default class Tuit {
         this.tuit = tuit;
         this.postedOn = postedOn;
         this.postedBy = null;
+        this.stats = {
+            replies: 0,
+            retuits: 0,
+            likes: 0
+        };
     }
 
     /**
@@ -53,4 +59,16 @@ export default class Tuit {
      * @return {string} The unique ID of the Tuit
      */
     public get idTuit(): string { return this.id; }
+
+    /**
+     * Updates the stats of the Tuit
+     * @return {object} The stats held by the Tuit
+     */
+    public get tuitStats(): object { return this.stats; }
+
+    /**
+     * Sets the stats object of the Tuit
+     * @param {object} stats The statistics for this tuit, such as number of likes or replies
+     */
+    public set setStats(stats: object) { this.stats = stats; }
 }
