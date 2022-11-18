@@ -48,7 +48,7 @@ mongoose.connect(`mongodb+srv://${USER}:${PWD}@cs5500.rmrbkxw.mongodb.net/${DB_N
 
 const userController = UserController.getInstance(app, UserDao.getInstance());
 const tuitController = TuitController.getInstance(app, TuitDao.getInstance());
-const likeController = LikeController.getInstance(app, LikeDao.getInstance());
+const likeController = LikeController.getInstance(app, LikeDao.getInstance(), TuitDao.getInstance());
 const followController = FollowController.getInstance(app, FollowDao.getInstance());
 const bookmarkController = BookmarkController.getInstance(app, BookmarkDao.getInstance());
 const messageController = MessageController.getInstance(app, MessageDao.getInstance());

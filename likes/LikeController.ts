@@ -7,6 +7,7 @@
 import {Express, Request, Response} from "express";
 import LikeDaoI from "./LikeDaoI";
 import LikeControllerI from "./LikeControllerI";
+import TuitDaoI from "../tuits/TuitDaoI";
 
 /**
  * Our Like controller implementation class for parsing HTTP requests and return JSON responses.
@@ -18,25 +19,30 @@ import LikeControllerI from "./LikeControllerI";
 export default class LikeController implements LikeControllerI {
     private static likesController: LikeController | null = null;
     private static likeDao: LikeDaoI;
+    private static tuitDao: TuitDaoI;
 
     /**
      * Creates or returns an instance of the Like Controller so that it can be used by the
      * Express app and return JSON objects.
      * @param {Express} app The Express object that handles the HTTP parsing and responding
-     * @param {LikeDao} likeDao The DAO that handles communications with the remote database
+     * @param {LikeDao} likeDao The DAO that handles communications with the remote database for Likes
+     * @param {TuitDao} tuitDao The DAO that handles communications with the remote database for Tuits
      * @return {LikeController} The initialized Like Controller object
      */
-    public static getInstance = (app: Express, likeDao: LikeDaoI): LikeController => {
+    public static getInstance = (app: Express, likeDao: LikeDaoI, tuitDao: TuitDaoI): LikeController => {
         if (LikeController.likesController === null) {
             LikeController.likesController = new LikeController();
         }
         LikeController.likeDao = likeDao;
+        LikeController.tuitDao = tuitDao;
+
         app.get("/api/users/:uid/likes", LikeController.likesController.findTuitsUserLiked);
         app.get("/api/tuits/:tid/likes", LikeController.likesController.findUsersThatLikedTuit);
         app.get("/api/tuits/:tid/likes/count", LikeController.likesController.findTuitLikesCount);
         app.get("/api/users/:uid/likes/:tid", LikeController.likesController.findUserLikesTuit);
         app.post("/api/users/:uid/likes/:tid", LikeController.likesController.userLikesTuit);
         app.delete("/api/users/:uid/likes/:tid", LikeController.likesController.userUnlikesTuit);
+        app.put("/api/users/:uid/likes/:tid", LikeController.likesController.userTogglesTuitLikes);
 
         return LikeController.likesController;
     }
@@ -116,4 +122,36 @@ export default class LikeController implements LikeControllerI {
         LikeController.likeDao
             .userUnlikesTuit(req.params.uid, req.params.tid)
             .then(status => res.json(status));
+
+    /**
+     * Parses an HTTP request, updates the amount of Likes associated with a tuit, and then sets
+     * the HTTP response appropriately if it was successful or not
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    userTogglesTuitLikes = async (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        const tid = req.params.tid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile.id : uid;
+        try {
+            const userAlreadyLikedTuit = await LikeController.likeDao
+                .findUserLikesTuit(userId, tid);
+            const howManyLikedTuit = await LikeController.likeDao
+                .findTuitLikesCount(tid);
+            let tuit = await LikeController.tuitDao.findTuitById(tid);
+            if (userAlreadyLikedTuit) {
+                await LikeController.likeDao.userUnlikesTuit(userId, tid);
+                tuit.tuitStats.likes = howManyLikedTuit - 1;
+            } else {
+                await LikeController.likeDao.userLikesTuit(userId, tid);
+                tuit.tuitStats.likes = howManyLikedTuit + 1;
+            }
+            await LikeController.tuitDao.updateLikes(tid, tuit.tuitStats);
+            res.sendStatus(200);
+        } catch (e) {
+            res.sendStatus(404);
+        }
+    }
 }
