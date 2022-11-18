@@ -140,17 +140,22 @@ export default class LikeController implements LikeControllerI {
                 .findUserLikesTuit(userId, tid);
             const howManyLikedTuit = await LikeController.likeDao
                 .findTuitLikesCount(tid);
-            let tuit = await LikeController.tuitDao.findTuitById(tid);
+            let tuit = await LikeController.tuitDao
+                .findTuitById(tid);
+
             if (userAlreadyLikedTuit) {
-                await LikeController.likeDao.userUnlikesTuit(userId, tid);
+                await LikeController.likeDao
+                    .userUnlikesTuit(userId, tid);
                 tuit.tuitStats.likes = howManyLikedTuit - 1;
             } else {
-                await LikeController.likeDao.userLikesTuit(userId, tid);
+                await LikeController.likeDao
+                    .userLikesTuit(userId, tid);
                 tuit.tuitStats.likes = howManyLikedTuit + 1;
             }
-            await LikeController.tuitDao.updateLikes(tid, tuit.tuitStats);
+            await LikeController.tuitDao
+                .updateLikes(tid, tuit.tuitStats);
             res.sendStatus(200);
-        } catch (e) {
+        } catch (e) { // catch a failure and report it
             res.sendStatus(404);
         }
     }
