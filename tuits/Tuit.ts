@@ -16,7 +16,7 @@ export default class Tuit {
     private tuit: string;
     private postedOn: Date;
     private postedBy: User | null;
-    private stats: object;
+    private stats: Record<any, any>;
 
 /**
      * Creates a new Tuit object representing a post made by a User.
@@ -64,11 +64,11 @@ export default class Tuit {
      * Updates the stats of the Tuit
      * @return {object} The stats held by the Tuit
      */
-    public get tuitStats(): object { return this.stats; }
+    public get tuitStats(): Record<any, any> { return this.stats; }
 
     /**
      * Sets the stats object of the Tuit
      * @param {object} stats The statistics for this tuit, such as number of likes or replies
      */
-    public set setStats(stats: object) { this.stats = stats; }
+    public set setStats(stats: Record<any, any>) { this.stats = stats; }
 }

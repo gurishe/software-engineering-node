@@ -55,6 +55,7 @@ export default class TuitDao implements TuitDaoI {
             tuitMongooseModel?.tuit ?? '',
             new Date(tuitMongooseModel?.postedOn ?? (new Date())))
         tuit.author = author;
+        tuit.setStats = tuitMongooseModel?.stats ?? {};
         return tuit;
     }
 
