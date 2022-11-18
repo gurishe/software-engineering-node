@@ -34,6 +34,7 @@ export default class LikeController implements LikeControllerI {
         app.get("/api/users/:uid/likes", LikeController.likesController.findTuitsUserLiked);
         app.get("/api/tuits/:tid/likes", LikeController.likesController.findUsersThatLikedTuit);
         app.get("/api/tuits/:tid/likes/count", LikeController.likesController.findTuitLikesCount);
+        app.get("/api/users/:uid/likes/:tid", LikeController.likesController.findUserLikesTuit);
         app.post("/api/users/:uid/likes/:tid", LikeController.likesController.userLikesTuit);
         app.delete("/api/users/:uid/likes/:tid", LikeController.likesController.userUnlikesTuit);
 
@@ -81,6 +82,17 @@ export default class LikeController implements LikeControllerI {
         LikeController.likeDao
             .findTuitLikesCount(req.params.tid)
             .then(likes => res.json({likes}));
+
+    /**
+     * Parses an HTTP request and adds the matching JSON formatted Like object to the HTTP response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    findUserLikesTuit = (req: Request, res: Response) =>
+        LikeController.likeDao
+            .findUserLikesTuit(req.params.uid, req.params.tid)
+            .then(like => res.json(like));
 
     /**
      * Parses an HTTP request and adds a new JSON formatted Like object to the HTTP response.

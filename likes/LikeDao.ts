@@ -77,6 +77,21 @@ export default class LikeDao implements LikeDaoI {
     }
 
     /**
+     * Finds the Like object with the matching user ID and tuit ID if it exists
+     * @param {string} uid The unique ID of the User
+     * @param {string} tid The unique ID of the Tuit
+     * @return {Like} The found Like object or an empty Like object if it is not found
+     */
+    findUserLikesTuit = async (uid: string, tid: string) => {
+        const like = await likeModel.findOne({tuit: tid, likedBy: uid});
+        return new Like(
+            like?._id.toString() ?? '',
+            like?.likedBy ?? '',
+            like?.tuit ?? ''
+        )
+    }
+
+    /**
      * Find the number of Likes on a given Tuit
      * @param tid The primary ID of the Tuit
      * @return {number} The number of Likes on the Tuit
