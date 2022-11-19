@@ -3,6 +3,7 @@
  * access objects as well as sets up the connection to our remote database.
  */
 
+import * as dotenv from 'dotenv'
 import express, {Request, Response} from 'express';
 import mongoose from "mongoose";
 import LikeController from "./likes/LikeController";
@@ -19,6 +20,7 @@ import MessageController from "./messages/MessageController";
 import MessageDao from "./messages/MessageDao";
 import AuthenticationController from "./auth/AuthController";
 
+dotenv.config()
 const session = require("express-session");
 const cors = require('cors');
 const app = express();
@@ -43,7 +45,7 @@ app.use(session(sess));
 
 const USER = process.env.DB_USER;
 const PWD = process.env.DB_PWD;
-const DB_NAME = process.env.DB_NAME || 'tuiter';
+const DB_NAME = process.env.DB_NAME;
 mongoose.connect(`mongodb+srv://${USER}:${PWD}@cs5500.rmrbkxw.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`);
 
 const userController = UserController.getInstance(app, UserDao.getInstance());
