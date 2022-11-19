@@ -78,7 +78,9 @@ export default class TuitDao implements TuitDaoI {
                 tuit.author = new User(
                     tuitMongooseModel?.postedBy?._id.toString() ?? '',
                     tuitMongooseModel?.postedBy?.username ?? '',
-                    tuitMongooseModel?.postedBy?.password ?? '');
+                    tuitMongooseModel?.postedBy?.password ?? ''
+                );
+                tuit.setStats = tuitMongooseModel?.stats ?? {};
                 return tuit;
         });
     }
@@ -90,13 +92,23 @@ export default class TuitDao implements TuitDaoI {
      */
     async findTuitsByAuthor(authorId: string): Promise<Tuit[]> {
         const tuitMongooseModels = await TuitModel
-            .find({postedBy: authorId});
+            .find({postedBy: authorId})
+            .populate('postedBy')
+            .exec();
         return tuitMongooseModels
             .map((tuitMongooseModel) => {
-                return new Tuit(
+                const tuit = new Tuit(
                     tuitMongooseModel?._id.toString() ?? '',
                     tuitMongooseModel?.tuit ?? '',
-                    new Date(tuitMongooseModel?.postedOn ?? (new Date())))
+                    new Date(tuitMongooseModel?.postedOn ?? (new Date()))
+                );
+                tuit.setStats = tuitMongooseModel?.stats ?? {};
+                tuit.author = new User(
+                    tuitMongooseModel?.postedBy?._id.toString() ?? '',
+                    tuitMongooseModel?.postedBy?.username ?? '',
+                    tuitMongooseModel?.postedBy?.password ?? ''
+                );
+                return tuit
             });
     }
 
