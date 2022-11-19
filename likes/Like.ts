@@ -24,4 +24,10 @@ export default class Like {
         this.tuit = tuit;
         this.likedBy = likedBy;
     }
+
+    /**
+     * Gets the ID of this Like object
+     * @return {string} The ID of the Like object
+     */
+    get lid(): string { return this.id; }
 }
