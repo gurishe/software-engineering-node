@@ -44,16 +44,28 @@ export default class LikeDao implements LikeDaoI {
     async findTuitsUserLiked(uid: string): Promise<Tuit[]> {
         const model = await likeModel
             .find({likedBy: uid, isDislike: false})
-            .populate('tuit')
-            .populate('likedBy')
+            .populate({
+                path: 'tuit',
+                populate: {
+                    path: 'postedBy'
+                }
+            })
             .exec();
-        return model.map(tuitModel =>
-            new Tuit(
+        return model.map(tuitModel => {
+            const tuit = new Tuit(
                 tuitModel?.tuit?._id.toString() ?? '',
                 tuitModel?.tuit?.tuit ?? '',
                 new Date(tuitModel?.likedTuit?.postedOn ?? (new Date()))
-            )
-        );
+            );
+            tuit.author = new User(
+                tuitModel?.tuit?.postedBy?._id.toString() ?? '',
+                tuitModel?.tuit?.postedBy?.username ?? '',
+                tuitModel?.tuit?.postedBy?.password ?? ''
+
+            );
+            tuit.setStats = tuitModel?.tuit?.stats ?? {};
+            return tuit;
+        });
     }
 
     /**
@@ -64,16 +76,28 @@ export default class LikeDao implements LikeDaoI {
     async findTuitsUserDisliked(uid: string): Promise<Tuit[]> {
         const model = await likeModel
             .find({likedBy: uid, isDislike: true})
-            .populate('tuit')
-            .populate('likedBy')
+            .populate({
+                path: 'tuit',
+                populate: {
+                    path: 'postedBy'
+                }
+            })
             .exec();
-        return model.map(tuitModel =>
-            new Tuit(
+        return model.map(tuitModel => {
+            const tuit = new Tuit(
                 tuitModel?.tuit?._id.toString() ?? '',
                 tuitModel?.tuit?.tuit ?? '',
                 new Date(tuitModel?.likedTuit?.postedOn ?? (new Date()))
-            )
-        );
+            );
+            tuit.author = new User(
+                tuitModel?.tuit?.postedBy?._id.toString() ?? '',
+                tuitModel?.tuit?.postedBy?.username ?? '',
+                tuitModel?.tuit?.postedBy?.password ?? ''
+
+            );
+            tuit.setStats = tuitModel?.tuit?.stats ?? {};
+            return tuit;
+        });
     }
 
     /**

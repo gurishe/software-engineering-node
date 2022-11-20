@@ -61,10 +61,15 @@ export default class LikeController implements LikeControllerI {
      * @param {Response} res The Express HTTP Response object
      * @return void
      */
-    findTuitsUserLiked = (req: Request, res: Response) =>
+    findTuitsUserLiked = (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile.id : uid;
+
         LikeController.likeDao
-            .findTuitsUserLiked(req.params.uid)
+            .findTuitsUserLiked(userId)
             .then(likes => res.json(likes));
+    }
 
     /**
      * Parses an HTTP request and adds a JSON formatted array of Users who liked a specific Tuit to
