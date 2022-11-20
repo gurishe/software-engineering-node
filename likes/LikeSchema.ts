@@ -11,7 +11,8 @@ import mongoose from "mongoose";
  */
 const LikeSchema = new mongoose.Schema({
     likedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
-    tuit: {type: mongoose.Schema.Types.ObjectId, ref: 'TuitModel'}
+    tuit: {type: mongoose.Schema.Types.ObjectId, ref: 'TuitModel'},
+    isDislike: {type: Boolean, default: false}
 }, {collection: 'likes'});
 
 export default LikeSchema;
