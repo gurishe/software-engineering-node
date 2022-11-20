@@ -37,6 +37,7 @@ export default class LikeController implements LikeControllerI {
         LikeController.tuitDao = tuitDao;
 
         app.get("/api/users/:uid/likes", LikeController.likesController.findTuitsUserLiked);
+        app.get("/api/users/:uid/dislikes", LikeController.likesController.findTuitsUserDisliked);
         app.get("/api/tuits/:tid/likes", LikeController.likesController.findUsersThatLikedTuit);
         app.get("/api/tuits/:tid/likes/count", LikeController.likesController.findTuitLikesCount);
         app.get("/api/users/:uid/likes/:tid", LikeController.likesController.findUserLikesTuit);
@@ -69,6 +70,23 @@ export default class LikeController implements LikeControllerI {
         LikeController.likeDao
             .findTuitsUserLiked(userId)
             .then(likes => res.json(likes));
+    }
+
+    /**
+     * Parses an HTTP request and adds a JSON formatted array of Tuits disliked by a User to the HTTP
+     * response.
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    findTuitsUserDisliked = (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile.id : uid;
+
+        LikeController.likeDao
+            .findTuitsUserDisliked(userId)
+            .then(dislikes => res.json(dislikes));
     }
 
     /**

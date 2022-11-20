@@ -10,6 +10,7 @@ import {Request, Response} from "express";
  */
 export default interface LikeControllerI {
     findTuitsUserLiked(req: Request, res: Response): void;
+    findTuitsUserDisliked(req: Request, res: Response): void;
     findUsersThatLikedTuit(req: Request, res: Response): void;
     findTuitLikesCount(req: Request, res: Response): void;
     findUserLikesTuit(req: Request, res: Response): void;
