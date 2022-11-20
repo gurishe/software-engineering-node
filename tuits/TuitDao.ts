@@ -157,15 +157,13 @@ export default class TuitDao implements TuitDaoI {
     /**
      * Updates the statistics object of an existing Tuit record
      * @param {string} tid The primary ID of the Tuit to be updated
-     * @param {object} newStats The object containing the updated count of likes
+     * @param {object} newStats The object containing the updated statistics
      * @return {number} The number of records updated
      */
-    async updateLikes(tid: string, newStats: object): Promise<any> {
+    async updateStats(tid: string, newStats: object): Promise<any> {
         return TuitModel.updateOne(
             {_id: tid},
             {$set: {stats: newStats}}
         );
     }
-
-
 }
