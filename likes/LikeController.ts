@@ -43,6 +43,7 @@ export default class LikeController implements LikeControllerI {
         app.post("/api/users/:uid/likes/:tid", LikeController.likesController.userLikesTuit);
         app.delete("/api/users/:uid/likes/:tid", LikeController.likesController.userUnlikesTuit);
         app.put("/api/users/:uid/likes/:tid", LikeController.likesController.userTogglesTuitLikes);
+        app.put("/api/users/:uid/dislikes/:tid", LikeController.likesController.userTogglesTuitDislikes);
 
         return LikeController.likesController;
     }
@@ -108,7 +109,7 @@ export default class LikeController implements LikeControllerI {
      */
     userLikesTuit = (req: Request, res: Response) =>
         LikeController.likeDao
-            .userLikesTuit(req.params.uid, req.params.tid)
+            .userLikesTuit(req.params.uid, req.params.tid, false)
             .then(status => res.json(status));
 
     /**
@@ -124,7 +125,7 @@ export default class LikeController implements LikeControllerI {
             .then(status => res.json(status));
 
     /**
-     * Parses an HTTP request, updates the amount of Likes associated with a tuit, and then sets
+     * Parses an HTTP request, updates the amount of likes associated with a tuit, and then sets
      * the HTTP response appropriately if it was successful or not
      * @param {Request} req The Express HTTP request object
      * @param {Response} res The Express HTTP Response object
@@ -140,17 +141,76 @@ export default class LikeController implements LikeControllerI {
                 .findUserLikesTuit(userId, tid);
             const howManyLikedTuit = await LikeController.likeDao
                 .findTuitLikesCount(tid);
+            const howManyDislikedTuit = await LikeController.likeDao
+                .findTuitDislikesCount(tid);
             let tuit = await LikeController.tuitDao
                 .findTuitById(tid);
 
             if (userAlreadyLikedTuit.lid) {
-                await LikeController.likeDao
-                    .userUnlikesTuit(userId, tid);
-                tuit.tuitStats.likes = howManyLikedTuit - 1;
+                if (userAlreadyLikedTuit.dislike) { // convert this dislike into a like
+                    await LikeController.likeDao
+                        .toggleIsDislike(userAlreadyLikedTuit.lid, false)
+                    tuit.tuitStats.likes = howManyLikedTuit + 2;
+                    tuit.tuitStats.dislikes = howManyDislikedTuit - 2;
+                } else {
+                    await LikeController.likeDao
+                        .userUnlikesTuit(userId, tid);
+                    tuit.tuitStats.likes = howManyLikedTuit - 1;
+                    tuit.tuitStats.dislikes = howManyDislikedTuit + 1;
+                }
             } else {
                 await LikeController.likeDao
-                    .userLikesTuit(userId, tid);
+                    .userLikesTuit(userId, tid, false);
                 tuit.tuitStats.likes = howManyLikedTuit + 1;
+                tuit.tuitStats.dislikes = howManyDislikedTuit - 1;
+            }
+            await LikeController.tuitDao
+                .updateStats(tid, tuit.tuitStats);
+            res.sendStatus(200);
+        } catch (e) { // catch a failure and report it
+            res.sendStatus(404);
+        }
+    }
+
+    /**
+     * Parses an HTTP request, updates the amount of dislikes associated with a tuit, and then sets
+     * the HTTP response appropriately if it was successful or not
+     * @param {Request} req The Express HTTP request object
+     * @param {Response} res The Express HTTP Response object
+     * @return void
+     */
+    userTogglesTuitDislikes = async (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        const tid = req.params.tid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ? profile.id : uid;
+        try {
+            const userAlreadyLikedTuit = await LikeController.likeDao
+                .findUserLikesTuit(userId, tid);
+            const howManyLikedTuit = await LikeController.likeDao
+                .findTuitLikesCount(tid);
+            const howManyDislikedTuit = await LikeController.likeDao
+                .findTuitDislikesCount(tid);
+            let tuit = await LikeController.tuitDao
+                .findTuitById(tid);
+
+            if (userAlreadyLikedTuit.lid) {
+                if (!userAlreadyLikedTuit.dislike) { // convert this like into a dislike
+                    await LikeController.likeDao
+                        .toggleIsDislike(userAlreadyLikedTuit.lid, true)
+                    tuit.tuitStats.likes = howManyLikedTuit - 2;
+                    tuit.tuitStats.dislikes = howManyDislikedTuit + 2;
+                } else { // remove altogether
+                    await LikeController.likeDao
+                        .userUnlikesTuit(userId, tid);
+                    tuit.tuitStats.likes = howManyLikedTuit + 1;
+                    tuit.tuitStats.dislikes = howManyDislikedTuit - 1;
+                }
+            } else {
+                await LikeController.likeDao
+                    .userLikesTuit(userId, tid, true);
+                tuit.tuitStats.likes = howManyLikedTuit - 1;
+                tuit.tuitStats.dislikes = howManyDislikedTuit + 1;
             }
             await LikeController.tuitDao
                 .updateStats(tid, tuit.tuitStats);
