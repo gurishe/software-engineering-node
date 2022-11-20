@@ -32,7 +32,8 @@ export default class Tuit {
         this.stats = {
             replies: 0,
             retuits: 0,
-            likes: 0
+            likes: 0,
+            dislikes: 0
         };
     }
 
